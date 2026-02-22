@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright 2023 Serie Sumei
 
-// v0.2 03Dec2023 <seriesumei@avimail.org> - Rewrite for Max HUD
+// v0.2 04Dec2023 <seriesumei@avimail.org> - Rewrite for Max HUD
+// v0.3 21Feb2026 <seriesumei@avimail.org> - Update textures for OSGrid and cleanups
 
 // This builds a multi-paned HUD for Max that includes panes for alpha cuts,
 // skin applier and an Options pane that has fingernail
@@ -31,7 +32,7 @@ integer FINI = FALSE;
 integer counter = 0;
 integer num_repeat = 0;
 
-key hud_texture;
+key hud_base_texture;
 key header_texture;
 key skin_texture;
 key options_texture;
@@ -98,13 +99,13 @@ string GetGridName() {
 }
 
 // The textures used in the HUD referenced below are included in the repo:
-// hud_texture: ruth2_v3_hud_gradient.png
+// hud_base_texture: max_hud_base-512.png
 // header_texture: max_hud_header-512.png
-// skin_texture: ruth2_v3_hud_skin.png
-// options_texture: ruth2_v3_hud_options.png
-// alpha_button_texture: r2_hud_alpha_buttons.png
-// alpha_doll_texture: r2_hud_alpha_doll.png
-// fingernails_shape_texture: ruth 2.0 hud fingernails shape.png
+// skin_texture: max_hud_skin-512.png
+// options_texture: max_hud_options-512.png
+// alpha_button_texture: max_hud_alpha_buttons-512.png
+// alpha_doll_texture: max_hud_alpha_doll_f-512.png
+// fingernails_shape_texture: (none yet)
 
 configure() {
     num_alpha_buttons = 3;
@@ -113,13 +114,13 @@ configure() {
     if (is_SL()) {
         // Textures in SL
         // The textures listed are full-perm uploaded by seriesumei Resident
-        hud_texture = "e75bab3a-587e-6a2e-af2f-931b4b6563c0";
-        skin_texture = "206804f6-908a-8efb-00de-fe00b2604906";
-        alpha_doll_texture = "1e757025-39a0-dcef-dd67-567eadb86fe2";
-        alpha_button_texture = "3105f8fe-3219-fd83-33f3-aafa2c4b802b";
+        hud_base_texture = "e75bab3a-587e-6a2e-af2f-931b4b6563c0";
+        skin_texture = "57e05117-d80e-1d69-8c64-70672104e6bd";
+        alpha_doll_texture = "2b984fe0-eee2-d1ef-c75d-e973ff9d3835";
+        alpha_button_texture = "36f3a970-c440-ee89-374f-fe18638fa41c";
         header_texture = "be9b5ded-815b-c240-12a8-54af52878248";
         options_texture = "1006e4d9-ea71-fbb5-c6aa-60c883a66422";
-        fingernails_shape_texture = TEXTURE_BLANK;
+        fingernails_shape_texture = TEXTURE_TRANSPARENT;
         alpha_doll_pos = <0.0, 0.57, 0.18457>;
     } else {
         if (GetGridName() == "OSGrid") {
@@ -129,21 +130,21 @@ configure() {
             //       compile in SL so editing the script would stll be required.
             //       Maybe we don't care too much about that?
             // The textures listed are full-perm uploaded by serie sumei to OSGrid
-            hud_texture = "699c5ee8-5296-4fc0-a771-e6d0a06cc590";
-            skin_texture = "64184dac-b33b-4a1b-b200-7d09d8928b64";
-            alpha_doll_texture = "45292011-feb6-4d0b-b4b0-5d1464943fdd";
-            alpha_button_texture = "d7389b96-54de-4824-90f8-7af8dac01a99";
-            header_texture = "bb35fd1d-4a9f-4c92-91c7-e402bc01a7c6";
-            options_texture = "891a3136-c767-42ca-9172-cbb980601132";
-            fingernails_shape_texture = TEXTURE_BLANK;
+            hud_base_texture = "56bac573-f5ca-4888-9ef8-200a630ed96b";
+            skin_texture = "28168eaf-509e-46d9-ad0b-e7e49966af0a";
+            alpha_doll_texture = "ff9ff671-9310-4012-bf62-efc60c1e3440";
+            alpha_button_texture = "2d798082-1de0-4bb5-9d88-f89ff85e1b6c";
+            header_texture = "98fd3302-fd71-4c36-b7ba-f10eac988ee4";
+            options_texture = "1cdf89b4-3f84-4fc2-9e6d-4306f70175a9";
+            fingernails_shape_texture = TEXTURE_TRANSPARENT;
             alpha_doll_pos = <0.0, 0.75, 0.0>;
         } else {
             log("OpenSim detected but grid " + GetGridName() + " unknown, using blank textures");
-            hud_texture = TEXTURE_BLANK;
+            hud_base_texture = TEXTURE_BLANK;
             header_texture = TEXTURE_BLANK;
             skin_texture = TEXTURE_BLANK;
             options_texture = TEXTURE_BLANK;
-            fingernails_shape_texture = TEXTURE_BLANK;
+            fingernails_shape_texture = TEXTURE_TRANSPARENT;
             alpha_button_texture = TEXTURE_BLANK;
             alpha_doll_texture = TEXTURE_BLANK;
         }
@@ -281,11 +282,11 @@ default {
                 llSetLinkPrimitiveParamsFast(2, [
                     PRIM_NAME, "hudbox",
                     PRIM_TEXTURE, 0, options_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
-                    PRIM_TEXTURE, 1, skin_texture, <1.0, 0.8, 0.0>, <0.0, 0.1, 0.0>, 90.0 * DEG_TO_RAD,
+                    PRIM_TEXTURE, 1, skin_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
                     PRIM_TEXTURE, 2, TEXTURE_TRANSPARENT, <1.0, 1.0, 0.0>, <0.0, 0.0, 0.0>, 1.0,
-                    PRIM_TEXTURE, 3, hud_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
+                    PRIM_TEXTURE, 3, hud_base_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
                     PRIM_TEXTURE, 4, TEXTURE_TRANSPARENT, <1.0, 1.0, 0.0>, <0.0, 0.0, 0.0>, 1.0,
-                    PRIM_TEXTURE, 5, hud_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
+                    PRIM_TEXTURE, 5, hud_base_texture, <0.9, 0.78, 0.0>, <0.0, 0.06, 0.0>, 90.0 * DEG_TO_RAD,
                     PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                     PRIM_ALPHA_MODE, ALL_SIDES, PRIM_ALPHA_MODE_NONE, 0,
                     PRIM_ALPHA_MODE, 2, PRIM_ALPHA_MODE_BLEND, 0,
@@ -360,6 +361,7 @@ default {
                 PRIM_TEXTURE, 2, skin_texture, <0.087, 0.087, 0.00>, <-0.375, -0.437, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 6, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -375,6 +377,7 @@ default {
                 PRIM_TEXTURE, 0, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 2, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -389,6 +392,7 @@ default {
                 PRIM_TEXTURE, ALL_SIDES, TEXTURE_TRANSPARENT, <1.0, 1.0, 0.0>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 6, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -404,6 +408,7 @@ default {
                 PRIM_TEXTURE, 0, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 2, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -416,9 +421,10 @@ default {
             llSetLinkPrimitiveParamsFast(2, [
                 PRIM_NAME, "amode0",
                 PRIM_TEXTURE, ALL_SIDES, TEXTURE_TRANSPARENT, <1.0, 1.0, 0.0>, <0.0, 0.0, 0.0>, 0.0,
-                PRIM_TEXTURE, 2, skin_texture, <0.255, 0.064, 0.00>, <0.0, -0.438, 0.0>, 0.0,
-                PRIM_TEXTURE, 4, skin_texture, <0.255, 0.064, 0.00>, <0.3134, -0.438, 0.0>, 0.0,
-                PRIM_SIZE, <0.01, 0.300, 0.03>
+                PRIM_TEXTURE, 2, skin_texture, <0.2, 0.1, 0.00>, <0.0, -0.438, 0.0>, 0.0,
+                PRIM_TEXTURE, 4, skin_texture, <0.2, 0.1, 0.00>, <0.3134, -0.438, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
+                PRIM_SIZE, <0.01, 0.300, 0.04>
             ]);
 
             log("Rezzing eye button 0");
@@ -433,6 +439,7 @@ default {
                 PRIM_TEXTURE, 2, skin_texture, <0.087, 0.087, 0.00>, <-0.375, -0.437, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 6, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -448,6 +455,7 @@ default {
                 PRIM_TEXTURE, 0, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 2, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 4, TEXTURE_BLANK, <0.0, 0.0, 0.00>, <0.0, 0.0, 0.0>, 0.0,
+                PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
                 PRIM_SIZE, <0.01, 0.15, 0.04>
             ]);
 
@@ -484,7 +492,6 @@ default {
                 PRIM_TEXTURE, 2, fingernails_shape_texture, <0.2, 0.9, 0.0>, <0.125, 0.0, 0.0>, 0.0,
                 PRIM_TEXTURE, 3, fingernails_shape_texture, <0.2, 0.9, 0.0>, <0.375, 0.0, 0.0>, 0.0,
                 PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.00,
-                PRIM_COLOR, 3, <0.3, 0.3, 0.3>, 1.00,
                 PRIM_SIZE, <0.01, 0.09, 0.0165>
             ]);
 
